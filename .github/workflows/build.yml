@@ -42,15 +42,12 @@ jobs:
         copy dist\worker.exe package\worker\
 
     # ------------------------
-    # Setup Node + UI
+    # Copy Files
     # ------------------------
-    
-    # ------------------------
-    # Copy Config + NSSM
-    # ------------------------
-- name: Copy Files
-  run: |
-    copy config.json package\
+    - name: Copy Files
+      run: |
+        mkdir package
+        copy config.json package\
 
     # ------------------------
     # Install Inno Setup
@@ -59,14 +56,14 @@ jobs:
       run: choco install innosetup -y
 
     # ------------------------
-    # Build Installer
+    # Compile Installer
     # ------------------------
     - name: Compile Installer
       run: |
         "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\SK_UnrealFarm_AllInOne.iss
 
     # ------------------------
-    # Upload EXE
+    # Upload Installer
     # ------------------------
     - name: Upload Installer
       uses: actions/upload-artifact@v4
