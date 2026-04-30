@@ -58,8 +58,8 @@ jobs:
     # Compile Installer
     # ------------------------
     - name: Compile Installer
-      run: |
-        "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer/SK_UnrealFarm_AllInOne.iss
+      shell: cmd
+      run: '"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\SK_UnrealFarm_AllInOne.iss'
 
     # ------------------------
     # Upload Installer
