@@ -46,7 +46,6 @@ jobs:
     # ------------------------
     - name: Copy Files
       run: |
-        mkdir package
         copy config.json package\
 
     # ------------------------
