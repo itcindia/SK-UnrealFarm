@@ -19,7 +19,7 @@ Source: "package\manager\manager.exe"; DestDir: "{app}"
 Source: "package\worker\worker.exe"; DestDir: "{app}"
 
 ; UI
-Source: "package\ui\build\*"; DestDir: "{app}\ui"; Flags: recursesubdirs createallsubdirs
+Flags: recursesubdirs createallsubdirs
 
 ; Config
 Source: "package\config.json"; DestDir: "{app}"
