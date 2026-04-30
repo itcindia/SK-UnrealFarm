@@ -1,1 +1,1 @@
-Build trigger test
+Edit README → save
