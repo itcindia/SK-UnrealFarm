@@ -29,7 +29,7 @@ jobs:
     - name: Build Manager
       run: |
         pyinstaller --onefile manager/manager.py
-        mkdir package\manager
+        if not exist "package\manager" mkdir package\manager
         copy dist\manager.exe package\manager\
 
     # ------------------------
@@ -38,15 +38,25 @@ jobs:
     - name: Build Worker
       run: |
         pyinstaller --onefile worker/worker.py
-        mkdir package\worker
+        if not exist "package\worker" mkdir package\worker
         copy dist\worker.exe package\worker\
 
     # ------------------------
-    # Copy Files
+    # Copy Config
     # ------------------------
-    - name: Copy Files
+    - name: Copy Config
       run: |
+        if not exist "package" mkdir package
         copy config.json package\
+
+    # ------------------------
+    # Download NSSM
+    # ------------------------
+    - name: Download NSSM
+      run: |
+        powershell -Command "Invoke-WebRequest -Uri 'https://nssm.cc/download/nssm-2.24-101-g897c7f7.zip' -OutFile 'nssm.zip'"
+        powershell -Command "Expand-Archive -Path 'nssm.zip' -DestinationPath '.' -Force"
+        copy "nssm-2.24-101-g897c7f7\win64\nssm.exe" package\
 
     # ------------------------
     # Install Inno Setup
