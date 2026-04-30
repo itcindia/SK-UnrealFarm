@@ -48,10 +48,9 @@ jobs:
     # ------------------------
     # Copy Config + NSSM
     # ------------------------
-    - name: Copy Files
-      run: |
-        copy config.json package\
-        copy nssm.exe package\
+- name: Copy Files
+  run: |
+    copy config.json package\
 
     # ------------------------
     # Install Inno Setup
