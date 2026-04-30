@@ -1,4 +1,4 @@
-name: Build Installer
+name: Build SK UnrealFarm Installer
 
 on:
   push:
@@ -12,26 +12,77 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    - name: Setup Python
-      uses: actions/setup-python@v5
+    # ------------------------
+    # Python Setup
+    # ------------------------
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
-    - name: Install PyInstaller
-      run: pip install pyinstaller
+    - run: pip install pyinstaller
 
+    # ------------------------
+    # Build Manager
+    # ------------------------
     - name: Build Manager
-      run: pyinstaller --onefile manager/manager.py
+      run: |
+        pyinstaller --onefile manager/manager.py
+        mkdir package\manager
+        copy dist\manager.exe package\manager\
 
+    # ------------------------
+    # Build Worker
+    # ------------------------
     - name: Build Worker
-      run: pyinstaller --onefile worker/worker.py
+      run: |
+        pyinstaller --onefile worker/worker.py
+        mkdir package\worker
+        copy dist\worker.exe package\worker\
 
+    # ------------------------
+    # Setup Node + UI
+    # ------------------------
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Build UI
+      run: |
+        cd dashboard
+        npm install
+        npm run build
+        cd ..
+        mkdir package\ui
+        xcopy dashboard\build package\ui\build /E /I /Y
+
+    # ------------------------
+    # Copy Config + NSSM
+    # ------------------------
+    - name: Copy Files
+      run: |
+        copy config.json package\
+        copy nssm.exe package\
+
+    # ------------------------
+    # Install Inno Setup
+    # ------------------------
     - name: Install Inno Setup
       run: choco install innosetup -y
 
-    - name: Build Installer
+    # ------------------------
+    # Build Installer
+    # ------------------------
+    - name: Compile Installer
       run: |
         "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\SK_UnrealFarm_AllInOne.iss
+
+    # ------------------------
+    # Upload EXE
+    # ------------------------
+    - name: Upload Installer
+      uses: actions/upload-artifact@v4
+      with:
+        name: SK-UnrealFarm-Installer
+        path: Output\*.exe
